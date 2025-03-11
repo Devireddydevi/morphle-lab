@@ -1,0 +1,51 @@
+[8:26 pm, 11/3/2025] Devi: # Flask Application (app.py)
+
+from flask import Flask, render_template
+import subprocess
+import datetime
+import os
+import pytz
+
+app = Flask(_name_)
+
+@app.route('/htop')
+def htop_endpoint():
+    # a. Full Name (Replace with your actual name)
+    full_name = "Your Full Name"
+
+    # b. Username
+    username = os.getlogin()
+
+    # c. Server Time in IST
+    ist = pytz.timezone('Asia/Kolkata')
+    server_time_ist = datetime.datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S.%f")
+
+    # d. Top Output
+    try:
+        top_output = subprocess.check_output(['top', '-bn1'], universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        top_output = f"Error running top: {e}"
+
+    return render_template('htop.html', 
+                           full_name=full_name, 
+                           username=username, 
+                           server_time_ist=server_time_ist, 
+                           top_output=top_output)
+
+if _name_ == '_main_':
+    app.run(host='0.0.0.0', port=6000)  # Use port 6000 as specified in the problem
+[8:26 pm, 11/3/2025] Devi: <!DOCTYPE html>
+<html>
+<head>
+    <title>/htop Endpoint</title>
+</head>
+<body>
+    <h1>/htop Endpoint</h1>
+    <p><strong>Name:</strong> {{ full_name }}</p>
+    <p><strong>Username:</strong> {{ username }}</p>
+    <p><strong>Server Time (IST):</strong> {{ server_time_ist }}</p>
+    <hr>
+    <h2>TOP Output:</h2>
+    <pre>{{ top_output }}</pre>
+</body>
+</html>
